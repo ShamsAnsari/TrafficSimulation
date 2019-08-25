@@ -51,8 +51,8 @@ public class Grid {
     }
 
     public boolean collide(Tower tower, Car car) {
-        double xDiff = car.getCenter().getX() - tower.getCenter().getX();
-        double yDiff = car.getCenter().getY() - tower.getCenter().getY();
+        double xDiff = car.getLocation().getX() - tower.getLocation().getX();
+        double yDiff = car.getLocation().getY() - tower.getLocation().getY();
 
         double distance = Math.sqrt((Math.pow(xDiff, 2) + Math.pow(yDiff, 2)));
 
