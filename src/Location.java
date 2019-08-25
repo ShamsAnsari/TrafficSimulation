@@ -34,11 +34,7 @@ public class Location {
         y += d;
     }
 
-    public void decrX(int d) {
-        x -= d;
-    }
-
-    public void decrY(int d) {
-        y -= d;
+    public String toString() {
+        return "(" + x + ", " + y + ")";
     }
 }
