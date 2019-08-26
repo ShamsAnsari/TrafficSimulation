@@ -1,10 +1,13 @@
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Tower {
     private int radius;
     private int size;
     private Point location;
     private Color color;
+    private ArrayList<Car> cars;
+    private Grid grid;
 
     public Tower(int radius, Point location, Color color) {
         this.radius = radius;
@@ -27,7 +30,6 @@ public class Tower {
     public void render(Graphics g) {
         g.setColor(color);
         fillCenteredCircle(g, location.getX(), location.getY(), size);
-        g.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue()));
         drawCenteredCircle(g, location.getX(), location.getY(), radius);
 
     }
@@ -108,5 +110,41 @@ public class Tower {
      */
     public void setSize(int size) {
         this.size = size;
+    }
+
+    /**
+     * Sets new cars.
+     *
+     * @param cars New value of cars.
+     */
+    public void setCars(ArrayList<Car> cars) {
+        this.cars = cars;
+    }
+
+    /**
+     * Gets cars.
+     *
+     * @return Value of cars.
+     */
+    public ArrayList<Car> getCars() {
+        return cars;
+    }
+
+    /**
+     * Gets grid.
+     *
+     * @return Value of grid.
+     */
+    public Grid getGrid() {
+        return grid;
+    }
+
+    /**
+     * Sets new grid.
+     *
+     * @param grid New value of grid.
+     */
+    public void setGrid(Grid grid) {
+        this.grid = grid;
     }
 }

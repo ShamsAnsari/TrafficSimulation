@@ -1,9 +1,12 @@
 
 
+
 import java.awt.*;
+
 import java.util.ArrayList;
 
 public class Car {
+
     private Point location;
     private Point destination;
     private int speed;
@@ -23,17 +26,26 @@ public class Car {
         this.color = color;
         this.radius = radius;
 
+
     }
     //==================================================================================================================
     //*************************************************PUBLIC METHODS***************************************************
     //==================================================================================================================
 
+    /**
+     * Renders the car
+     *
+     * @param g
+     */
     public void render(Graphics g) {
         g.setColor(color);
         drawCenteredCircle(g, location.getX(), location.getY(), radius);
 
     }
 
+    /**
+     * Updates the car's location
+     */
     public void update() {
         double deltaX = destination.getX() - location.getX();
         double deltaY = destination.getY() - location.getY();
@@ -46,7 +58,28 @@ public class Car {
             Point des = calculateSidePoint();
             setDestination(des);
         }
-        // Wraps around the screen
+
+        checkOutOfBounds();
+
+        tower = closestTower();
+
+        int distance = distanceFrom(tower);
+//        int r = tower.getColor().getRed();
+//        int g = tower.getColor().getGreen();
+//        int b = tower.getColor().getBlue();
+//        double MAX_DISTANCE = 720;
+//        int a = (int) (((MAX_DISTANCE - distance) / MAX_DISTANCE) * 255.0);
+
+        setColor(tower.getColor());
+
+    }
+
+
+    //==================================================================================================================
+    //*************************************************PRIVATE METHODS***************************************************
+    //==================================================================================================================
+
+    private void checkOutOfBounds() {
         if (location.getX() > GameWindow.WIDTH) {
             location.setX(0);
         }
@@ -59,26 +92,14 @@ public class Car {
         if (location.getY() < 0) {
             location.setY(GameWindow.HEIGHT);
         }
-//        Tower tower = colliding();
-        tower = closestTower();
-
-        int distance = distanceFrom(tower);
-        int r = tower.getColor().getRed();
-        int g = tower.getColor().getGreen();
-        int b = tower.getColor().getBlue();
-        double MAX_DISTANCE = 720;
-        int a = (int) (((MAX_DISTANCE - distance) / MAX_DISTANCE) * 255.0);
-
-        setColor(new Color(r, g, b, a));
-
     }
 
-
-    //==================================================================================================================
-    //*************************************************PRIVATE METHODS***************************************************
-    //==================================================================================================================
-
-    private Point calculateSidePoint() {
+    /**
+     * Calculate a random point on one of the 4 sides of the JPanel.
+     *
+     * @return A point on the edge.
+     */
+    public static Point calculateSidePoint() {
         int desX = 0;
         int desY = 0;
         int side = (int) (Math.random() * 4 + 1);
@@ -102,6 +123,12 @@ public class Car {
         }
         return new Point(desX, desY);
     }
+
+    /**
+     * A car has reached its destination if the destination is in a 5 pixel radius of the car.
+     *
+     * @return True if the the car has "reached" its destination
+     */
     private boolean reached() {
         int distance = distanceFrom(destination);
         int radius = 5;
@@ -110,6 +137,11 @@ public class Car {
 
     }
 
+    /**
+     * Finds the closest tower to the car.
+     *
+     * @return The closest tower.
+     */
     private Tower closestTower() {
         ArrayList<Tower> towers = grid.getTowers();
 
@@ -124,7 +156,12 @@ public class Car {
         return cTower;
     }
 
-
+    /**
+     * Calculates the distance from the car to the Tower.
+     *
+     * @param tower the Tower
+     * @return The distance
+     */
     private int distanceFrom(Tower tower) {
         int tx = tower.getLocation().getX();
         int ty = tower.getLocation().getY();
@@ -136,6 +173,12 @@ public class Car {
         return distance;
     }
 
+    /**
+     * Calculates the distance from the car to a point.
+     *
+     * @param point The Point.
+     * @return The distance.
+     */
     private int distanceFrom(Point point) {
         int tx = point.getX();
         int ty = point.getY();
@@ -147,13 +190,25 @@ public class Car {
         return distance;
     }
 
-
+    /**
+     * Draws a circle with the center at x, y. Because java's fillOval starts drawing from top left (x,y)
+     *
+     * @param g      Graphics
+     * @param x      X-Coordinate
+     * @param y      Y - Coordinate
+     * @param radius radius of the circle
+     */
     private void drawCenteredCircle(Graphics g, int x, int y, int radius) {
         int diameter = radius * 2;
         g.fillOval(x - radius, y - radius, diameter, diameter);
     }
 
-
+    /**
+     * For the old method. If the car is in the radius of a Tower "colliding." No longer used because a car always has
+     * to be connected to a tower.
+     *
+     * @return The tower it is colliding with.
+     */
     private Tower colliding() {
         ArrayList<Tower> towers = grid.getTowers();
         for (Tower tower : towers) {
@@ -165,6 +220,13 @@ public class Car {
 
     }
 
+    /**
+     * No longer used. True if the car is collding with another tower
+     *
+     * @param tower The tower
+     * @param car   the car
+     * @return
+     */
     private boolean collide(Tower tower, Car car) {
         double xDiff = car.getLocation().getX() - tower.getLocation().getX();
         double yDiff = car.getLocation().getY() - tower.getLocation().getY();

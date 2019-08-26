@@ -13,36 +13,9 @@ public class Grid {
         towers = new ArrayList<>();
     }
 
-    public void addCar(Car car) {
-        cars.add(car);
-        car.setGrid(this);
-    }
-
-    public void addTower(Tower tower) {
-        towers.add(tower);
-    }
-
-    public ArrayList<Car> getCars() {
-        return cars;
-    }
-
     public void update() {
         cars.forEach(car -> car.update());
         towers.forEach(tower -> tower.update());
-
-
-    }
-
-    public void setCars(ArrayList<Car> cars) {
-        this.cars = cars;
-    }
-
-    public ArrayList<Tower> getTowers() {
-        return towers;
-    }
-
-    public void setTowers(ArrayList<Tower> towers) {
-        this.towers = towers;
     }
 
     public void render(Graphics g) {
@@ -50,13 +23,24 @@ public class Grid {
         towers.forEach(tower -> tower.render(g));
     }
 
-    public boolean collide(Tower tower, Car car) {
-        double xDiff = car.getLocation().getX() - tower.getLocation().getX();
-        double yDiff = car.getLocation().getY() - tower.getLocation().getY();
-
-        double distance = Math.sqrt((Math.pow(xDiff, 2) + Math.pow(yDiff, 2)));
-
-        return distance < (car.getRadius() + tower.getRadius());
+    public void addCar(Car car) {
+        cars.add(car);
+        car.setGrid(this);
     }
+
+    public void addTower(Tower tower) {
+        towers.add(tower);
+        tower.setGrid(this);
+    }
+
+    public ArrayList<Car> getCars() {
+        return cars;
+    }
+
+    public ArrayList<Tower> getTowers() {
+        return towers;
+    }
+
+
 
 }
