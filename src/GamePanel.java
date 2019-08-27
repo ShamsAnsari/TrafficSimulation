@@ -1,61 +1,34 @@
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Contains main gameloop
+ */
 public class GamePanel extends JPanel implements Runnable {
 
 
     private boolean isRunning;
     private Thread thread;
     private Grid grid;
+    private Controls controls;
 
+    //==================================================================================================================
+    //*****************************************************CONSTRUCTORS*************************************************
+    //==================================================================================================================
 
     public GamePanel(int width, int height) {
-
         setPreferredSize(new Dimension(width, height));
-
         initGrid();
+        controls = new Controls(grid);
     }
-
-    private void initCars(int numCars) {
-        for (int i = 0; i < numCars; i++) {
-
-            int speed = 1;
-            int radius = 3;
-            int locX = (int) (Math.random() * GameWindow.WIDTH);
-            int locY = (int) (Math.random() * GameWindow.HEIGHT);
-
-            Point des = Car.calculateSidePoint();
-
-            Car car = new Car(new Point(locX, locY), des, speed, radius, Color.BLACK);
-            grid.addCar(car);
-        }
-    }
-
-    private void initTower(int numTowers) {
-        for (int i = 0; i < numTowers; i++) {
-
-            int locX = (int) (Math.random() * GameWindow.WIDTH);
-            int locY = (int) (Math.random() * GameWindow.HEIGHT);
-
-            int r = (int) (Math.random() * 255);
-            int g = (int) (Math.random() * 255);
-            int b = (int) (Math.random() * 255);
-
-
-            Tower tower = new Tower(0, new Point(locX, locY), new Color(r, g, b));
-            grid.addTower(tower);
-        }
-    }
-
-    private void initGrid() {
-        grid = new Grid();
-
-        initCars(GameWindow.numCars);
-        initTower(GameWindow.numTowers);
-
-    }
+    //==================================================================================================================
+    //*************************************************PUBLIC METHODS***************************************************
+    //==================================================================================================================
 
     @Override
+    /**
+     * Low level thread stuff
+     */
     public void addNotify() {
         super.addNotify();
         if (thread == null) {
@@ -66,18 +39,23 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     @Override
+    /**
+     * Gameloop
+     */
     public void run() {
         isRunning = true;
+        int REFRESH_RATE = 60;
         while (isRunning) {
             repaint();
             update();
 
             try {
-                thread.sleep(1000 / 30);
+                thread.sleep(1000 / REFRESH_RATE);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+
 
     }
 
@@ -90,4 +68,18 @@ public class GamePanel extends JPanel implements Runnable {
     public void paint(Graphics g) {
         grid.render(g);
     }
+    //==================================================================================================================
+    //*************************************************PRIVATE METHODS***************************************************
+    //==================================================================================================================
+
+
+
+    private void initGrid() {
+        grid = new Grid();
+
+        grid.setNumCars(GameWindow.numCars);
+        grid.initTower(GameWindow.numTowers);
+
+    }
+
 }

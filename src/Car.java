@@ -13,7 +13,9 @@ public class Car {
     private Color color;
     private int radius;
     private Grid grid;
-    private Tower tower;
+    private volatile Tower tower;
+    private boolean lineOn;
+
 
     //==================================================================================================================
     //*****************************************************CONSTRUCTORS*************************************************
@@ -40,8 +42,15 @@ public class Car {
     public void render(Graphics g) {
         g.setColor(color);
         drawCenteredCircle(g, location.getX(), location.getY(), radius);
+        if (lineOn) {
+            drawLineToTower(g);
+        }
+        g.setColor(Color.black);
+        g.setFont(new Font("TimesRoman", Font.PLAIN, 10));
 
+        g.drawString(distanceFrom(tower) + " ", location.getX() + radius, location.getY() + radius);
     }
+
 
     /**
      * Updates the car's location
@@ -62,36 +71,12 @@ public class Car {
         checkOutOfBounds();
 
         tower = closestTower();
+        if (tower != null) {
+            setColor(tower.getColor());
 
-        int distance = distanceFrom(tower);
-//        int r = tower.getColor().getRed();
-//        int g = tower.getColor().getGreen();
-//        int b = tower.getColor().getBlue();
-//        double MAX_DISTANCE = 720;
-//        int a = (int) (((MAX_DISTANCE - distance) / MAX_DISTANCE) * 255.0);
-
-        setColor(tower.getColor());
-
-    }
-
-
-    //==================================================================================================================
-    //*************************************************PRIVATE METHODS***************************************************
-    //==================================================================================================================
-
-    private void checkOutOfBounds() {
-        if (location.getX() > GameWindow.WIDTH) {
-            location.setX(0);
         }
-        if (location.getX() < 0) {
-            location.setX(GameWindow.WIDTH);
-        }
-        if (location.getY() > GameWindow.HEIGHT) {
-            location.setY(0);
-        }
-        if (location.getY() < 0) {
-            location.setY(GameWindow.HEIGHT);
-        }
+
+
     }
 
     /**
@@ -124,6 +109,31 @@ public class Car {
         return new Point(desX, desY);
     }
 
+    public void toggleLine() {
+        lineOn = !lineOn;
+    }
+
+
+    //==================================================================================================================
+    //*************************************************PRIVATE METHODS***************************************************
+    //==================================================================================================================
+
+    private void checkOutOfBounds() {
+        if (location.getX() > GameWindow.WIDTH) {
+            location.setX(0);
+        }
+        if (location.getX() < 0) {
+            location.setX(GameWindow.WIDTH);
+        }
+        if (location.getY() > GameWindow.HEIGHT) {
+            location.setY(0);
+        }
+        if (location.getY() < 0) {
+            location.setY(GameWindow.HEIGHT);
+        }
+    }
+
+
     /**
      * A car has reached its destination if the destination is in a 5 pixel radius of the car.
      *
@@ -137,6 +147,10 @@ public class Car {
 
     }
 
+    private void drawLineToTower(Graphics g) {
+        g.drawLine(location.getX(), location.getY(), tower.getLocation().getX(), tower.getLocation().getY());
+    }
+
     /**
      * Finds the closest tower to the car.
      *
@@ -144,12 +158,18 @@ public class Car {
      */
     private Tower closestTower() {
         ArrayList<Tower> towers = grid.getTowers();
+        Tower cTower = null;
+        synchronized (towers) {
+            cTower = towers.get(0);
+            if (cTower == null) {
+                return null;
 
-        Tower cTower = towers.get(0);
-        for (Tower tower : towers) {
-            int distance = distanceFrom(tower);
-            if (distance < distanceFrom(cTower)) {
-                cTower = tower;
+            }
+            for (Tower tower : towers) {
+                int distance = distanceFrom(tower);
+                if (distance < distanceFrom(cTower)) {
+                    cTower = tower;
+                }
             }
         }
 
@@ -163,6 +183,9 @@ public class Car {
      * @return The distance
      */
     private int distanceFrom(Tower tower) {
+        if (tower == null) {
+            return -1;
+        }
         int tx = tower.getLocation().getX();
         int ty = tower.getLocation().getY();
 
@@ -364,5 +387,24 @@ public class Car {
      */
     public void setGrid(Grid grid) {
         this.grid = grid;
+    }
+
+
+    /**
+     * Sets new lineOn.
+     *
+     * @param lineOn New value of lineOn.
+     */
+    public void setLineOn(boolean lineOn) {
+        this.lineOn = lineOn;
+    }
+
+    /**
+     * Gets lineOn.
+     *
+     * @return Value of lineOn.
+     */
+    public boolean isLineOn() {
+        return lineOn;
     }
 }

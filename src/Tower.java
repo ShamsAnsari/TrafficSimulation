@@ -8,6 +8,8 @@ public class Tower {
     private Color color;
     private ArrayList<Car> cars;
     private Grid grid;
+    int l = 0;
+
 
     public Tower(int radius, Point location, Color color) {
         this.radius = radius;
@@ -31,13 +33,26 @@ public class Tower {
         g.setColor(color);
         fillCenteredCircle(g, location.getX(), location.getY(), size);
         drawCenteredCircle(g, location.getX(), location.getY(), radius);
+        if (l % 2 == 0) {
+            if (radius > 20) {
+                radius = 0;
+            } else {
+                radius++;
+            }
+        }
+        l++;
+
 
     }
 
 
     public void update() {
-
+        //TODO: make list of all cars conneted to cell tower
     }
+
+    //==================================================================================================================
+    //*****************************************************GETTERS & SETTERS********************************************
+    //==================================================================================================================
 
 
     /**

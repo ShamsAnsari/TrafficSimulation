@@ -3,13 +3,19 @@
 import javax.swing.*;
 import java.util.Scanner;
 
+/**
+ *
+ */
 public class GameWindow extends JFrame {
     public static final int WIDTH = 1280;
     public static final int HEIGHT = 720;
     public static int numCars;
-    public static int numTowers;
+    public static int numTowers = 3;
 
 
+    /**
+     *
+     */
     public GameWindow() {
         setTitle("TrafficSimulation");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -22,12 +28,11 @@ public class GameWindow extends JFrame {
 
     }
 
-    public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        System.out.print("Enter the number of cars: ");
-        numCars = input.nextInt();
-        System.out.print("Enter the number of towers: ");
-        numTowers = input.nextInt();
+    /**
+     * Main method
+     * @param args not used
+     */
+    public static void main(String[] args) { ;
         new GameWindow();
     }
 }
